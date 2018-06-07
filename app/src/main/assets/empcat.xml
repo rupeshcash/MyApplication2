@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="breadboard" size="1.000000 0.562500" />
+    <ImageTarget name="log" size="1.000000 0.562500" />
+    <ImageTarget name="girnar" size="1.000000 0.639171" />
+    <ImageTarget name="anucode" size="5.000000 1.539735" />
+    <ImageTarget name="prancode" size="5.000000 1.647849" />
+    <ImageTarget name="rucode" size="5.000000 1.420558" />
+  </Tracking>
+</QCARConfig>
