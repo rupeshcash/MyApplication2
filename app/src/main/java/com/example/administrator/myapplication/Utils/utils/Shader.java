@@ -13,10 +13,10 @@ import android.opengl.GLES20;
 import android.util.Log;
 
 
-public class SampleUtils
+public class Shader
 {
     
-    private static final String LOGTAG = "SampleUtils";
+    private static final String LOGTAG = "Shader";
     
     
     static int initShader(int shaderType, String source)

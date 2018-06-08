@@ -32,13 +32,12 @@ import com.vuforia.Vec2F;
 import com.vuforia.Vec2I;
 import com.vuforia.VideoBackgroundConfig;
 import com.vuforia.VideoMode;
-import com.vuforia.ViewList;
-import com.example.administrator.myapplication.Utils.utils.SampleUtils;
+import com.example.administrator.myapplication.Utils.utils.Shader;
 import com.example.administrator.myapplication.Utils.utils.VideoBackgroundShader;
 
-public class SampleAppRenderer {
+public class AppRenderer {
 
-    private static final String LOGTAG = "SampleAppRenderer";
+    private static final String LOGTAG = "AppRenderer";
 
     private RenderingPrimitives mRenderingPrimitives = null;
     private RendererInterface mRenderingInterface = null;
@@ -46,6 +45,7 @@ public class SampleAppRenderer {
 
     private Renderer mRenderer = null;
     private int currentView = VIEW.VIEW_SINGULAR;
+
     private float mNearPlane = -1.0f;
     private float mFarPlane = -1.0f;
 
@@ -65,8 +65,8 @@ public class SampleAppRenderer {
     // Stores orientation
     private boolean mIsPortrait = false;
 
-    public SampleAppRenderer(RendererInterface renderingInterface, Activity activity, int deviceMode,
-                             boolean stereo, float nearPlane, float farPlane)
+    public AppRenderer(RendererInterface renderingInterface, Activity activity, int deviceMode,
+                       boolean stereo, float nearPlane, float farPlane)
     {
         mActivity = activity;
         mRenderingInterface = renderingInterface;
@@ -116,7 +116,7 @@ public class SampleAppRenderer {
 
     void initRendering()
     {
-        vbShaderProgramID = SampleUtils.createProgramFromShaderSrc(VideoBackgroundShader.VB_VERTEX_SHADER,
+        vbShaderProgramID = Shader.createProgramFromShaderSrc(VideoBackgroundShader.VB_VERTEX_SHADER,
                 VideoBackgroundShader.VB_FRAGMENT_SHADER);
 
         // Rendering configuration for video background
@@ -164,16 +164,7 @@ public class SampleAppRenderer {
         else
             GLES20.glFrontFace(GLES20.GL_CCW);   // Back camera
 
-        // We get a list of views which depend on the mode we are working on, for mono we have
-        // only one view, in stereo we have three: left, right and postprocess
-        ViewList viewList = mRenderingPrimitives.getRenderingViews();
-
-        // Cycle through the view list
-        for (int v = 0; v < viewList.getNumViews(); v++)
-        {
-
                 mRenderingInterface.renderFrame(state);
-        }
 
         mRenderer.end();
     }
@@ -238,7 +229,7 @@ public class SampleAppRenderer {
         GLES20.glDisableVertexAttribArray(vbVertexHandle);
         GLES20.glDisableVertexAttribArray(vbTexCoordHandle);
 
-        SampleUtils.checkGLError("Rendering of the video background failed");
+        Shader.checkGLError("Rendering of the video background failed");
     }
 
     static final float VIRTUAL_FOV_Y_DEGS = 85.0f;

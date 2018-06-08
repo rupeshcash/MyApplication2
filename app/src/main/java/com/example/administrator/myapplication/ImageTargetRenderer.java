@@ -9,21 +9,28 @@ countries.
 
 package com.example.administrator.myapplication;
 
+import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.example.administrator.myapplication.Utils.Vuforia.AppRenderer;
 import com.example.administrator.myapplication.Utils.Vuforia.VuforiaAppSession;
+import com.example.administrator.myapplication.Utils.utils.LoadingDialogHandler;
 import com.vuforia.Device;
-import com.vuforia.Matrix44F;
 import com.vuforia.State;
-import com.vuforia.Tool;
 import com.vuforia.Trackable;
 import com.vuforia.TrackableResult;
 import com.vuforia.Vuforia;
-import com.example.administrator.myapplication.Utils.Vuforia.SampleAppRenderer;
 import com.example.administrator.myapplication.Utils.Vuforia.RendererInterface;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -34,21 +41,28 @@ import javax.microedition.khronos.opengles.GL10;
 public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInterface
 {
     private static final String LOGTAG = "ImageTargetRenderer";
-    TextView newt;
+    private TextView newt,info_details;
+    private RelativeLayout info_layout;
     private VuforiaAppSession vuforiaAppSession;
     private ImageTargets mActivity;
-    private SampleAppRenderer mSampleAppRenderer;
+    private AppRenderer mSampleAppRenderer;
     private boolean mIsActive = false;
+    private ViewPager mImageViewPager;
+    private TabLayout tabLayout;
 
-    
     public ImageTargetRenderer(ImageTargets activity, VuforiaAppSession session)
     {
         mActivity = activity;
         vuforiaAppSession = session;
-        // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
+        // AppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
-        mSampleAppRenderer = new SampleAppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 0.01f , 5f);
-        mActivity.newt = mActivity.findViewById(R.id.imagetargettext);
+        mSampleAppRenderer = new AppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 0.01f , 5f);
+        info_layout = mActivity.findViewById(R.id.info_layout);
+        newt = mActivity.findViewById(R.id.target_info);
+       // info_details = mActivity.findViewById(R.id.info_details);
+        mImageViewPager = (ViewPager) mActivity.findViewById(R.id.pager);
+        tabLayout = (TabLayout) mActivity.findViewById(R.id.tabDots);
+        tabLayout.setupWithViewPager(mImageViewPager, true);
     }
 
 
@@ -60,7 +74,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
         if (!mIsActive)
             return;
 
-        // Call our function to render content from SampleAppRenderer
+        // Call our function to render content from AppRenderer
         mSampleAppRenderer.render();
     }
     
@@ -102,11 +116,15 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
     }
     
     
-    // Function for initializing the renderer.
+    // Function for initializing the renderer. Basically nothing for now.
     private void initRendering()
     {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, Vuforia.requiresAlpha() ? 0.0f
                 : 1.0f);
+
+        // Hide the Loading Dialog
+        mActivity.loadingDialogHandler
+                .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
     }
 
     public void updateConfiguration()
@@ -115,12 +133,17 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
     }
 
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
-    // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
+    // The state is owned by AppRenderer which is controlling it's lifecycle.
     // State should not be cached outside this method.
     public void renderFrame(State state)
     {
         // Renders video background replacing Renderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground();
+
+        // handle face culling, we need to detect if we are using reflection
+        // to determine the direction of the culling
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        GLES20.glCullFace(GLES20.GL_BACK);
 
 
        //set the visibility of textview = gone
@@ -131,7 +154,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
                 @Override
                 public void run() {
 
-                    newt.setVisibility(View.GONE);
+                info_layout.setVisibility(View.GONE);
                 }
             });
         }
@@ -147,14 +170,24 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
                     @Override
                     public void run() {
                         // Stuff to updates the UI
-                        newt.setVisibility(View.VISIBLE);
-                        newt.setText(trackable.getName());
+                        info_layout.setVisibility(View.VISIBLE);
+                        if(trackable.getName().equals("stones"))
+                        {
+
+                           newt.setText("Stones");
+                          //  info_details.setText("Stones and pebbles on a sea shore");
+                        }
+                        else if(trackable.getName().equals("chips"))
+                        {
+                            newt.setText("Chips");
+                            //info_details.setText(" crumbled chips  of wood");
+
+                        }
+
                     }
                 });
 
         }
-
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
     }
 

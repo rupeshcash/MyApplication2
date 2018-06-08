@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -39,12 +40,12 @@ import com.vuforia.Vuforia;
 import com.example.administrator.myapplication.Utils.Vuforia.vuforiaInterface;
 import com.example.administrator.myapplication.Utils.Vuforia.AppExceptions;
 import com.example.administrator.myapplication.Utils.utils.LoadingDialogHandler;
-import com.example.administrator.myapplication.Utils.utils.SampleApplicationGLView;
+import com.example.administrator.myapplication.Utils.utils.GLView;
 
 import java.util.ArrayList;
 
 
-public class ImageTargets extends Activity implements vuforiaInterface {
+public class ImageTargets extends AppCompatActivity implements vuforiaInterface {
     State state;
 
     private static final String LOGTAG = "ImageTargets";
@@ -53,12 +54,12 @@ public class ImageTargets extends Activity implements vuforiaInterface {
     public TextView newt;
     private DataSet mCurrentDataset;
     private int mCurrentDatasetSelectionIndex = 0;
-    private int mStartDatasetsIndex = 0;
-    private int mDatasetsNumber = 0;
+
+    //array of our datasets
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
     
     // Our OpenGL view:
-    private SampleApplicationGLView mGlView;
+    private GLView mGlView;
     
     // Our renderer:
     private ImageTargetRenderer mRenderer;
@@ -66,15 +67,11 @@ public class ImageTargets extends Activity implements vuforiaInterface {
     private GestureDetector mGestureDetector;
     
     // The textures we will use for rendering:
-
     private boolean mSwitchDatasetAsap = false;
     private boolean mFlash = false;
     private boolean mContAutofocus = true;
-    private boolean mExtendedTracking = false;
+    private boolean mExtendedTracking = true;
 
-    private View mFocusOptionView;
-    private View mFlashOptionView;
-    
     private RelativeLayout mUILayout;
     
 
@@ -98,8 +95,8 @@ public class ImageTargets extends Activity implements vuforiaInterface {
 
         //here i am loading whatever image targets i want my camera to detect.
         startLoadingAnimation();
-        mDatasetStrings.add("empcat.xml");
-        //mDatasetStrings.add("Tarmac.xml");
+        mDatasetStrings.add("StonesAndChips.xml");
+
         //start the vuforia session
         vuforiaAppSession
             .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -158,11 +155,7 @@ public class ImageTargets extends Activity implements vuforiaInterface {
             return true;
         }
     }
-    
-    
-    // We want to load specific textures from the APK, which we will later use
-    // for rendering.
-    
+
 
     
     // Called when the activity will start interacting with the user.
@@ -209,12 +202,6 @@ public class ImageTargets extends Activity implements vuforiaInterface {
             mGlView.onPause();
         }
         
-        // Turn off the flash
-        if (mFlashOptionView != null && mFlash)
-        {
-            // OnCheckedChangeListener is called upon changing the checked state
-        }
-        
         try
         {
             vuforiaAppSession.pauseAR();
@@ -223,8 +210,8 @@ public class ImageTargets extends Activity implements vuforiaInterface {
             Log.e(LOGTAG, e.getString());
         }
     }
-    
-    
+
+
     // The final call you receive before your activity is destroyed.
     @Override
     protected void onDestroy()
@@ -255,7 +242,7 @@ public class ImageTargets extends Activity implements vuforiaInterface {
         int stencilSize = 0;
         boolean translucent = Vuforia.requiresAlpha();
         
-        mGlView = new SampleApplicationGLView(this);
+        mGlView = new GLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
         mRenderer = new ImageTargetRenderer(this, vuforiaAppSession);
@@ -369,6 +356,7 @@ public class ImageTargets extends Activity implements vuforiaInterface {
         }
     }
 
+    //when vuforia is done initializing its components. Including initAR
     @Override
     public void onVuforiaStarted()
     {
