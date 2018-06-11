@@ -9,29 +9,39 @@ countries.
 
 package com.example.administrator.myapplication;
 
-import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.administrator.myapplication.Utils.MyDataObject;
+import com.example.administrator.myapplication.Utils.PagerAdapter;
+import com.example.administrator.myapplication.Utils.UpdateableFragment;
 import com.example.administrator.myapplication.Utils.Vuforia.AppRenderer;
 import com.example.administrator.myapplication.Utils.Vuforia.VuforiaAppSession;
 import com.example.administrator.myapplication.Utils.utils.LoadingDialogHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.vuforia.Device;
 import com.vuforia.State;
 import com.vuforia.Trackable;
 import com.vuforia.TrackableResult;
 import com.vuforia.Vuforia;
 import com.example.administrator.myapplication.Utils.Vuforia.RendererInterface;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -49,7 +59,11 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
     private boolean mIsActive = false;
     private ViewPager mImageViewPager;
     private TabLayout tabLayout;
-
+    TextView t1;
+    ViewPager viewPager;
+    MyDataObject object;
+    JSONObject matched_obj ;
+     PagerAdapter adapter;
     public ImageTargetRenderer(ImageTargets activity, VuforiaAppSession session)
     {
         mActivity = activity;
@@ -58,12 +72,9 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
         // the device mode AR/VR and stereo mode
         mSampleAppRenderer = new AppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 0.01f , 5f);
         info_layout = mActivity.findViewById(R.id.info_layout);
-        newt = mActivity.findViewById(R.id.target_info);
-       // info_details = mActivity.findViewById(R.id.info_details);
-        mImageViewPager = (ViewPager) mActivity.findViewById(R.id.pager);
-        tabLayout = (TabLayout) mActivity.findViewById(R.id.tabDots);
-        tabLayout.setupWithViewPager(mImageViewPager, true);
+        setpager();
     }
+
 
 
     // Called to draw the current frame.
@@ -164,26 +175,13 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
             final Trackable trackable = result.getTrackable();
             printUserData(trackable);
 
-
                 mActivity.runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
                         // Stuff to updates the UI
                         info_layout.setVisibility(View.VISIBLE);
-                        if(trackable.getName().equals("stones"))
-                        {
-
-                           newt.setText("Stones");
-                          //  info_details.setText("Stones and pebbles on a sea shore");
-                        }
-                        else if(trackable.getName().equals("chips"))
-                        {
-                            newt.setText("Chips");
-                            //info_details.setText(" crumbled chips  of wood");
-
-                        }
-
+                        displayinfo(trackable.getName());
                     }
                 });
 
@@ -196,8 +194,98 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
         String userData = (String) trackable.getUserData();
         Log.d(LOGTAG, "UserData:Retreived User Data	\"" + userData + "\"");
     }
-    
-    
 
-    
+
+    public String loadJSONFromAsset(Context context) {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("Workstation.Json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Log.e("ImageTargetRenderer", "unable to load json");
+            return null;
+        }
+        return json;
+
+    }
+
+    void setpager(){
+        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("WorksStation"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tasks"));
+        tabLayout.addTab(tabLayout.newTab().setText("Operator"));
+
+        object =  new MyDataObject("a", "b");
+        viewPager = (ViewPager) mActivity.findViewById(R.id.pager);
+        adapter = new PagerAdapter
+                (mActivity.getSupportFragmentManager(), tabLayout.getTabCount(), object);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+
+    //display the info of the workstation when found
+    public void displayinfo(String workstation){
+        matched_obj = null;
+        try {
+
+            JSONObject obj = new JSONObject(loadJSONFromAsset(mActivity));
+            JSONArray  workstations_array= obj.getJSONArray("Dataset");
+            for(int i=0;i<workstations_array.length();i++){
+                JSONObject currObject = workstations_array.getJSONObject(i);
+                String name = currObject.getString("name");
+
+                if(name.equals(workstation))
+                {
+                    matched_obj = currObject;
+                    break;
+                }
+            }
+
+            if(matched_obj!=null) {
+
+                JsonParser parser = new JsonParser();
+                JsonElement mJson =  parser.parse(matched_obj.toString());
+                Gson gson = new Gson();
+                object = gson.fromJson(mJson,MyDataObject.class);
+                adapter.update(object);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("IMAGETARGET", "unable to load JSON");
+        }
+
+
+
+    }
+
 }

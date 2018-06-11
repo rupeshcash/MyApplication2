@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,7 +46,7 @@ import com.example.administrator.myapplication.Utils.utils.GLView;
 import java.util.ArrayList;
 
 
-public class ImageTargets extends AppCompatActivity implements vuforiaInterface {
+public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     State state;
 
     private static final String LOGTAG = "ImageTargets";
