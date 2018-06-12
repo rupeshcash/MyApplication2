@@ -57,7 +57,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     private int mCurrentDatasetSelectionIndex = 0;
 
     //array of our datasets
-    private ArrayList<String> mDatasetStrings = new ArrayList<String>();
+    private ArrayList<String> mDatasetStrings = new ArrayList<>();
     
     // Our OpenGL view:
     private GLView mGlView;
@@ -84,8 +84,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     boolean mIsDroidDevice = false;
     
     
-    // Called when the activity first starts or the user navigates back to an
-    // activity.
+    // Called when the activity first starts or the user navigates back to an activity.
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -311,7 +310,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
             String name = "Current Dataset : " + trackable.getName();
             trackable.setUserData(name);
             Log.d(LOGTAG, "UserData:Set the following user data "
-                + (String) trackable.getUserData());
+                +  trackable.getUserData());
         }
         
         return true;
@@ -376,14 +375,9 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
 
                 // Update Toggle state
             }
-            else
-            {
-                // Update Toggle state
-            }
+
         }
-        else
-        {
-        }
+
 
         showProgressIndicator(false);
 
@@ -582,14 +576,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
         return mExtendedTracking;
     }
     
-    final public static int CMD_BACK = -1;
-    final public static int CMD_EXTENDED_TRACKING = 1;
-    final public static int CMD_AUTOFOCUS = 2;
-    final public static int CMD_FLASH = 3;
-    final public static int CMD_CAMERA_FRONT = 4;
-    final public static int CMD_CAMERA_REAR = 5;
-    final public static int CMD_DATASET_START_INDEX = 6;
-    
+
 
     private void showToast(String text)
     {

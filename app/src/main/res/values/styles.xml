@@ -3,11 +3,10 @@
 
     <style name="SampleAppsTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/black</item>
     </style>
 
-    <style name="layouttheme" parent="SampleAppsTheme">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">#99000000</item>
+    <style name="layouttheme">
+    <item name="android:textColor">@android:color/white</item>
     </style>
+
 </resources>

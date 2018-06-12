@@ -2,12 +2,21 @@
   "Dataset" : [
     {
       "id": "XYZ",
-      "name": "stones"
-
+      "name": "stones",
+      "running_time" : "2:30",
+      "temp" : "34",
+      "workstation_eff": "80",
+      "current_task" : "Chamfering",
+      "operator_name": "Sanjay"
     },
     {
       "id": "ABC",
-      "name": "chips"
+      "name": "chips",
+      "running_time" : "2:30",
+      "temp" : "25",
+      "workstation_eff": "60",
+      "current_task" : "Cutting",
+      "operator_name": "vivek"
 
     }
 ]

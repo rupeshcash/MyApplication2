@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
     <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:theme="@style/layouttheme"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/wname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tab 1"
             android:layout_gravity="center|top"
             android:padding="8dp"
-            android:textColor="@android:color/white"/>
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,37 +22,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Running Time"
-                android:textColor="@android:color/white"
+                android:padding="8dp"
+                android:text="@string/worstationid" />
+
+            <TextView
+                android:id="@+id/wstationid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/running_time"
-                android:text="2:30"
                 android:padding="8dp"
-                android:textColor="@android:color/white"/>
+                android:text="@string/efficiency" />
+
+            <TextView
+                android:id="@+id/wefficiency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                 />
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Temp"
-            android:textColor="@android:color/white"
-            android:padding="8dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/temp"
-            android:padding="8dp"
-            android:text="98 F"
-            android:textColor="@android:color/white"/>
-    </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>

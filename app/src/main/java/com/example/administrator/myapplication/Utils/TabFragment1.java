@@ -14,26 +14,27 @@ import com.example.administrator.myapplication.R;
 
 @SuppressLint("ValidFragment")
 public class TabFragment1 extends Fragment implements UpdateableFragment{
-    TextView textView ;
-    String id =null;
+    TextView wid,wname,weff ;
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.tab_fragment_1, container, false);
-        textView =  v.findViewById(R.id.textView1);
+        wid = v.findViewById(R.id.wstationid);
+        wname =v.findViewById(R.id.wname);
+        weff = v.findViewById(R.id.wefficiency);
         return v;
     }
 
 
-
-
         @Override
         public void update(MyDataObject xyzData) {
-            // this method will be called for every fragment in viewpager
-            // so check if update is for this fragment
-            textView.setText(xyzData.name);
+           wid.setText(xyzData.id);
+           wname.setText(xyzData.name);
+           weff.setText(xyzData.workstation_eff);
         }
+
 
 
 }

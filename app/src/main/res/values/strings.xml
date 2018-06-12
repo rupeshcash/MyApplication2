@@ -67,5 +67,9 @@
     <string name="menu_button_green">Green</string>
 
     <string name="splash_screen_description">Vuforia Splash</string>
+    <string name="worstationid">WorStationId:</string>
+    <string name="efficiency">Efficiency</string>
+    <string name="running_time">Running Time</string>
+    <string name="temp">Temp</string>
 
 </resources>

@@ -3,11 +3,6 @@
 
     <style name="SampleAppsTheme" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/black</item>
     </style>
 
-    <style name="layouttheme" parent="SampleAppsTheme">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">#99000000</item>
-    </style>
 </resources>

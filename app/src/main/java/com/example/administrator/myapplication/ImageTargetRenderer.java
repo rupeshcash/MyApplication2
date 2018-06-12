@@ -59,23 +59,18 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
     private boolean mIsActive = false;
     private ViewPager mImageViewPager;
     private TabLayout tabLayout;
-    TextView t1;
-    ViewPager viewPager;
-    MyDataObject object;
-    JSONObject matched_obj ;
-     PagerAdapter adapter;
+    private ViewPager viewPager;
+    private MyDataObject object;
+
+    private PagerAdapter adapter;
     public ImageTargetRenderer(ImageTargets activity, VuforiaAppSession session)
     {
         mActivity = activity;
         vuforiaAppSession = session;
-        // AppRenderer used to encapsulate the use of RenderingPrimitives setting
-        // the device mode AR/VR and stereo mode
         mSampleAppRenderer = new AppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 0.01f , 5f);
         info_layout = mActivity.findViewById(R.id.info_layout);
         setpager();
     }
-
-
 
     // Called to draw the current frame.
     @Override
@@ -143,21 +138,14 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
         mSampleAppRenderer.onConfigurationChanged(mIsActive);
     }
 
-    // The render function called from SampleAppRendering by using RenderingPrimitives views.
-    // The state is owned by AppRenderer which is controlling it's lifecycle.
-    // State should not be cached outside this method.
+    //called from AppRenderer.render() which is called from OnDrawFrame();
     public void renderFrame(State state)
     {
         // Renders video background replacing Renderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground();
 
-        // handle face culling, we need to detect if we are using reflection
-        // to determine the direction of the culling
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
-        GLES20.glCullFace(GLES20.GL_BACK);
 
-
-       //set the visibility of textview = gone
+       //set the visibility of info = gone
         if(state.getNumTrackableResults()==0){
 
             mActivity.runOnUiThread(new Runnable() {
@@ -179,9 +167,10 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
                     @Override
                     public void run() {
-                        // Stuff to updates the UI
-                        info_layout.setVisibility(View.VISIBLE);
+
                         displayinfo(trackable.getName());
+                        info_layout.setVisibility(View.VISIBLE);
+
                     }
                 });
 
@@ -197,7 +186,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
 
     public String loadJSONFromAsset(Context context) {
-        String json = null;
+        String json;
         try {
             InputStream is = context.getAssets().open("Workstation.Json");
 
@@ -221,18 +210,20 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
     }
 
-    void setpager(){
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("WorksStation"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tasks"));
-        tabLayout.addTab(tabLayout.newTab().setText("Operator"));
+    private void setpager(){
 
-        object =  new MyDataObject("a", "b");
-        viewPager = (ViewPager) mActivity.findViewById(R.id.pager);
+        TabLayout tabLayout = mActivity.findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        object =  new MyDataObject();
+        viewPager =  mActivity.findViewById(R.id.pager);
         adapter = new PagerAdapter
                 (mActivity.getSupportFragmentManager(), tabLayout.getTabCount(), object);
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.setupWithViewPager(viewPager, true);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -254,7 +245,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
     //display the info of the workstation when found
     public void displayinfo(String workstation){
-        matched_obj = null;
+        JSONObject matched_obj = null;
         try {
 
             JSONObject obj = new JSONObject(loadJSONFromAsset(mActivity));
