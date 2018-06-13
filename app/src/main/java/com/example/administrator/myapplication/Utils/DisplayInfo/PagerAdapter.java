@@ -1,10 +1,9 @@
-package com.example.administrator.myapplication.Utils;
+package com.example.administrator.myapplication.Utils.DisplayInfo;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import org.json.JSONObject;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;

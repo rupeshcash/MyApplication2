@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.Utils;
+package com.example.administrator.myapplication.Utils.DisplayInfo;
 
 
 
@@ -14,7 +14,7 @@ import com.example.administrator.myapplication.R;
 
 @SuppressLint("ValidFragment")
 public class TabFragment1 extends Fragment implements UpdateableFragment{
-    TextView wid,wname,weff ;
+    TextView wid,wcname,weff ;
 
 
 
@@ -22,7 +22,7 @@ public class TabFragment1 extends Fragment implements UpdateableFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.tab_fragment_1, container, false);
         wid = v.findViewById(R.id.wstationid);
-        wname =v.findViewById(R.id.wname);
+        wcname =v.findViewById(R.id.workcell);
         weff = v.findViewById(R.id.wefficiency);
         return v;
     }
@@ -31,7 +31,7 @@ public class TabFragment1 extends Fragment implements UpdateableFragment{
         @Override
         public void update(MyDataObject xyzData) {
            wid.setText(xyzData.id);
-           wname.setText(xyzData.name);
+           wcname.setText(xyzData.workcell_name);
            weff.setText(xyzData.workstation_eff);
         }
 

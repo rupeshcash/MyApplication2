@@ -52,7 +52,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     private static final String LOGTAG = "ImageTargets";
     
     VuforiaAppSession vuforiaAppSession;
-    public TextView newt;
+
     private DataSet mCurrentDataset;
     private int mCurrentDatasetSelectionIndex = 0;
 
@@ -71,7 +71,7 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     private boolean mSwitchDatasetAsap = false;
     private boolean mFlash = false;
     private boolean mContAutofocus = true;
-    private boolean mExtendedTracking = true;
+    private boolean mExtendedTracking = false;
 
     private RelativeLayout mUILayout;
     
@@ -575,7 +575,22 @@ public class ImageTargets extends FragmentActivity implements vuforiaInterface {
     {
         return mExtendedTracking;
     }
-    
+
+    @Override
+    public void onBackPressed() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("MyApp")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        ImageTargets.super.onBackPressed();
+                    }
+                }).create().show();
+
+    }
 
 
     private void showToast(String text)

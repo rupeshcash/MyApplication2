@@ -18,11 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.administrator.myapplication.Utils.MyDataObject;
-import com.example.administrator.myapplication.Utils.PagerAdapter;
-import com.example.administrator.myapplication.Utils.UpdateableFragment;
+import com.example.administrator.myapplication.Utils.DisplayInfo.MyDataObject;
+import com.example.administrator.myapplication.Utils.DisplayInfo.PagerAdapter;
+import com.example.administrator.myapplication.Utils.SampleMath;
 import com.example.administrator.myapplication.Utils.Vuforia.AppRenderer;
 import com.example.administrator.myapplication.Utils.Vuforia.VuforiaAppSession;
 import com.example.administrator.myapplication.Utils.utils.LoadingDialogHandler;
@@ -30,7 +29,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vuforia.Device;
+import com.vuforia.Matrix44F;
 import com.vuforia.State;
+import com.vuforia.Tool;
 import com.vuforia.Trackable;
 import com.vuforia.TrackableResult;
 import com.vuforia.Vuforia;
@@ -51,14 +52,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInterface
 {
     private static final String LOGTAG = "ImageTargetRenderer";
-    private TextView newt,info_details;
     private RelativeLayout info_layout;
     private VuforiaAppSession vuforiaAppSession;
     private ImageTargets mActivity;
     private AppRenderer mSampleAppRenderer;
     private boolean mIsActive = false;
-    private ViewPager mImageViewPager;
-    private TabLayout tabLayout;
     private ViewPager viewPager;
     private MyDataObject object;
 
@@ -159,10 +157,9 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
         }
         // Did we find any trackables in this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
-            TrackableResult result = state.getTrackableResult(tIdx);
+            final TrackableResult result = state.getTrackableResult(tIdx);
             final Trackable trackable = result.getTrackable();
             printUserData(trackable);
-
                 mActivity.runOnUiThread(new Runnable() {
 
                     @Override
@@ -170,7 +167,27 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
                         displayinfo(trackable.getName());
                         info_layout.setVisibility(View.VISIBLE);
+                        TextView trackable_distance = mActivity.findViewById(R.id.trackable_distance);
 
+                        Matrix44F modelViewMatrix_Vuforia = Tool.convertPose2GLMatrix(result.getPose());
+
+                        Matrix44F inversMV = SampleMath.Matrix44FInverse(modelViewMatrix_Vuforia);
+
+                        Matrix44F invTranspMV = SampleMath.Matrix44FTranspose(inversMV);
+
+                        float cam_x = invTranspMV.getData()[12];
+
+                        float cam_y = invTranspMV.getData()[13];
+
+                        float cam_z = invTranspMV.getData()[14];
+
+                        Log.v("QCV", "Posx=" + cam_x + ",posy=" + cam_y + ",posz=" + cam_z);
+
+                        float distance = new Float(Math.sqrt(cam_x * cam_x + cam_y * cam_y + cam_z * cam_z));
+
+                        Log.v("distance ",""+distance);
+
+                        trackable_distance.setText(String.valueOf(distance));
                     }
                 });
 
@@ -185,6 +202,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
     }
 
 
+    //Loads JSON and returns JSON string;
     public String loadJSONFromAsset(Context context) {
         String json;
         try {
@@ -210,6 +228,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
     }
 
+    //sets the view pager with a default MydataObject.
     private void setpager(){
 
         TabLayout tabLayout = mActivity.findViewById(R.id.tab_layout);
@@ -252,7 +271,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
             JSONArray  workstations_array= obj.getJSONArray("Dataset");
             for(int i=0;i<workstations_array.length();i++){
                 JSONObject currObject = workstations_array.getJSONObject(i);
-                String name = currObject.getString("name");
+                String name = currObject.getString("ident");
 
                 if(name.equals(workstation))
                 {
@@ -267,8 +286,13 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
                 JsonElement mJson =  parser.parse(matched_obj.toString());
                 Gson gson = new Gson();
                 object = gson.fromJson(mJson,MyDataObject.class);
-                adapter.update(object);
             }
+            else
+                object = new MyDataObject();
+
+                adapter.update(object);
+                TextView workstation_name = mActivity.findViewById(R.id.workstation_name);
+                workstation_name.setText(object.name);
 
         } catch (JSONException e) {
             e.printStackTrace();

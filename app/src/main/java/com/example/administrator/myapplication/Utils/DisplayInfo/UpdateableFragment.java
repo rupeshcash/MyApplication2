@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.Utils;
+package com.example.administrator.myapplication.Utils.DisplayInfo;
 
 public interface UpdateableFragment {
 

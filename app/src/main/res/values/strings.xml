@@ -67,9 +67,14 @@
     <string name="menu_button_green">Green</string>
 
     <string name="splash_screen_description">Vuforia Splash</string>
-    <string name="worstationid">WorStationId:</string>
-    <string name="efficiency">Efficiency</string>
-    <string name="running_time">Running Time</string>
-    <string name="temp">Temp</string>
+    <string name="worstationid">WorStationId: </string>
+    <string name="efficiency">Efficiency: </string>
+    <string name="running_time">Running Time: </string>
+    <string name="temp">Temp: </string>
+    <string name="workcell_name">WorkCell Name: </string>
+    <string name="current_task">Current Task: </string>
+    <string name="jobsheetid">JobSheetID: </string>
+    <string name="operator_details">Operator Name: </string>
+    <string name="remarks">Remark(s): </string>
 
 </resources>

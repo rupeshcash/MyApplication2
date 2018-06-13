@@ -1,23 +1,28 @@
 {
   "Dataset" : [
     {
-      "id": "XYZ",
-      "name": "stones",
-      "running_time" : "2:30",
+      "ident": "stones",
+      "id": "X1324",
+      "name": "CNC Machine",
+      "WorkCell": "Machine Shop",
+      "running_time" : "3:30",
       "temp" : "34",
       "workstation_eff": "80",
       "current_task" : "Chamfering",
-      "operator_name": "Sanjay"
+      "operator_name": "Sanjay",
+      "Remarks" : "Exact Size cutter not available"
     },
     {
-      "id": "ABC",
-      "name": "chips",
+      "ident": "chips",
+      "id": "A231X",
+      "name": "Lathe Machine",
+      "WorkCell": "Machine Shop",
       "running_time" : "2:30",
       "temp" : "25",
       "workstation_eff": "60",
       "current_task" : "Cutting",
-      "operator_name": "vivek"
-
+      "operator_name": "vivek",
+      "Remarks" : "No Remarks"
     }
 ]
 }

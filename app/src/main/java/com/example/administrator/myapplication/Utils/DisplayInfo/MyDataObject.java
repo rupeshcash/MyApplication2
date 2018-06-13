@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.Utils;
+package com.example.administrator.myapplication.Utils.DisplayInfo;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -19,6 +19,10 @@ public class MyDataObject {
     public String id;
     @SerializedName("current_task")
     public String curr_task;
+    @SerializedName("WorkCell")
+    public String workcell_name;
+    @SerializedName("Remarks")
+    public String remarks;
 
     public MyDataObject(){
         name= "N/A";
@@ -28,5 +32,7 @@ public class MyDataObject {
         workstation_eff = "N/A";
         operator_name = "N/A";
         curr_task = "N/A";
+        workcell_name = "N/A";
+        remarks = "N/A";
     }
 }
