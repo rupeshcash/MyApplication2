@@ -183,7 +183,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
                         Log.v("QCV", "Posx=" + cam_x + ",posy=" + cam_y + ",posz=" + cam_z);
 
-                        float distance = new Float(Math.sqrt(cam_x * cam_x + cam_y * cam_y + cam_z * cam_z));
+                        float distance = Float.valueOf((float) Math.sqrt(cam_x * cam_x + cam_y * cam_y + cam_z * cam_z));
 
                         Log.v("distance ",""+distance);
 
@@ -203,7 +203,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
 
     //Loads JSON and returns JSON string;
-    public String loadJSONFromAsset(Context context) {
+    private String loadJSONFromAsset(Context context) {
         String json;
         try {
             InputStream is = context.getAssets().open("Workstation.Json");
@@ -263,7 +263,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, RendererInte
 
 
     //display the info of the workstation when found
-    public void displayinfo(String workstation){
+    private void displayinfo(String workstation){
         JSONObject matched_obj = null;
         try {
 
